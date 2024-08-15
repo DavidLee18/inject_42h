@@ -23,5 +23,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: inject_42h-${{ matrix.os }}
-        path: upload/*
+        path: target/release/inject_42h
         retention-days: 1
