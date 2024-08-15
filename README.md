@@ -9,6 +9,7 @@ Required arguments are as follows:
 
 Generated output is like this:
 
+![42 header sample](sample.png)
 
 This program is actually built to be used as a [Zed](https://zed.dev) Task. Let me tell you how.
 
