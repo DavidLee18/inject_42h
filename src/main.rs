@@ -16,6 +16,9 @@ struct Args {
 
     #[arg(long)]
     path: String,
+
+    #[arg(long)]
+    offset: Option<i32>,
 }
 
 fn main() -> io::Result<()> {
@@ -23,15 +26,27 @@ fn main() -> io::Result<()> {
     let content = fs::read_to_string(&args.path)?;
     match _42header(&content) {
         Ok((c, header)) => {
-            fs::write(&args.path, _42_replace(header, args.name, Path::new(&args.path), args.path
-                .split('/')
-                .last()
-                .expect("file name cannot be retrieved")) + c)?;
+            fs::write(
+                &args.path,
+                _42_replace(
+                    header,
+                    args.name,
+                    Path::new(&args.path),
+                    args.path
+                        .split('/')
+                        .last()
+                        .expect("file name cannot be retrieved"),
+                    args.offset.unwrap_or(0),
+                ) + c,
+            )?;
             Ok(())
         }
         Err(e) => match e {
-            nom::Err::Incomplete(_) => Err(io::Error::new(io::ErrorKind::InvalidData, "Incomplete")),
-            nom::Err::Error(nom::error::Error { input: c, .. }) | nom::Err::Failure(nom::error::Error { input: c, .. })=> {
+            nom::Err::Incomplete(_) => {
+                Err(io::Error::new(io::ErrorKind::InvalidData, "Incomplete"))
+            }
+            nom::Err::Error(nom::error::Error { input: c, .. })
+            | nom::Err::Failure(nom::error::Error { input: c, .. }) => {
                 let header = _42(
                     args.name,
                     args.email,
@@ -40,15 +55,16 @@ fn main() -> io::Result<()> {
                         .last()
                         .expect("file name cannot be retrieved"),
                     &args.path,
+                    args.offset.unwrap_or(0),
                 );
                 fs::write(&args.path, header + c)?;
                 Ok(())
             }
-        }
+        },
     }
 }
 
-fn _42(name: String, email: String, file: &str, path: &str) -> String {
+fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> String {
     let mut res = String::new();
     res.push_str(
         "/* ************************************************************************** */\n",
@@ -86,7 +102,7 @@ fn _42(name: String, email: String, file: &str, path: &str) -> String {
         .duration_since(UNIX_EPOCH)
         .expect("conversion failed: created");
     let created = DateTime::from_timestamp_nanos(c_dur.as_nanos().try_into().unwrap())
-        .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
+        .with_timezone(&FixedOffset::east_opt(offset * 3600).unwrap());
     res.push_str(&created.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
     res.push_str(&name);
@@ -100,7 +116,7 @@ fn _42(name: String, email: String, file: &str, path: &str) -> String {
         .duration_since(UNIX_EPOCH)
         .expect("conversion failed: modified");
     let modified = DateTime::from_timestamp_nanos(m_dur.as_nanos().try_into().unwrap())
-        .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
+        .with_timezone(&FixedOffset::east_opt(offset * 3600).unwrap());
     res.push_str(&modified.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
     res.push_str(&name);
@@ -117,7 +133,13 @@ fn _42(name: String, email: String, file: &str, path: &str) -> String {
     res
 }
 
-fn _42_replace(header: _42Header, updater_name: String, path: &Path, file_name: &str) -> String {
+fn _42_replace(
+    header: _42Header,
+    updater_name: String,
+    path: &Path,
+    file_name: &str,
+    offset: i32,
+) -> String {
     let mut res = String::new();
     res.push_str(
         "/* ************************************************************************** */\n",
@@ -166,7 +188,7 @@ fn _42_replace(header: _42Header, updater_name: String, path: &Path, file_name: 
         .duration_since(UNIX_EPOCH)
         .expect("conversion failed: modified");
     let modified = DateTime::from_timestamp_nanos(m_dur.as_nanos().try_into().unwrap())
-        .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
+        .with_timezone(&FixedOffset::east_opt(offset * 3600).unwrap());
     res.push_str(&modified.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
     res.push_str(&updater_name);
