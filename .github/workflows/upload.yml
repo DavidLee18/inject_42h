@@ -1,0 +1,27 @@
+name: Upload Binary
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --verbose --release
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: inject_42h-${{ matrix.os }}
+        path: target/release/inject_42h
+        retention-days: 1
