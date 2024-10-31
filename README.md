@@ -25,3 +25,6 @@ This program is actually built to be used as a [Zed](https://zed.dev) Task. Let 
   ]
 ```
 3. Press Alt + Shift + T to spawn task. your task should be right there.
+
+**However, I'm happy to tell you that this executable now works with norminette LSP for Zed!**
+This means if you do some config, then when you save file, Norminette extension will **automatically update your 42 header!**
