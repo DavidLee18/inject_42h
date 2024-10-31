@@ -72,7 +72,7 @@ pub fn _42header(s: &str) -> IResult<&str, _42Header> {
                     "%Y/%m/%d %H:%M:%S",
                 )
                 .expect("not a valid datetime format"),
-                FixedOffset::east_opt(9 * 3600).unwrap(),
+                FixedOffset::east_opt(0).unwrap(),
             ),
 
             author_name: author_name.to_string(),
@@ -82,7 +82,7 @@ pub fn _42header(s: &str) -> IResult<&str, _42Header> {
                     "%Y/%m/%d %H:%M:%S",
                 )
                 .expect("not a valid datetime format"),
-                FixedOffset::east_opt(9 * 3600).unwrap(),
+                FixedOffset::east_opt(0).unwrap(),
             ),
             updater_name: updater_name.to_string(),
         },
