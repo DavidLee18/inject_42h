@@ -11,24 +11,9 @@ Generated output is like this:
 
 ![42 header sample](sample.png)
 
-~~This program is actually built to be used as a [Zed](https://zed.dev) Task. Let me tell you how.~~
-
-~~1. download cli from release page.~~
-~~2. edit a Zed Task file (such as `~/.config/zed/tasks.json`) like this:~~
-```json
-  [
-    {
-      "label": "...",
-      "command": "...",
-      "args": ["...", ...]
-    }
-  ]
-```
-~~3. Press Alt + Shift + T to spawn task. your task should be right there.~~
-
-**However, I'm happy to tell you that this executable now works with [norminette LSP](https://github.com/DavidLee18/norminette_lsp) for Zed!**
-This means if you do some config, then when you save file, [Norminette extension](https://github.com/DavidLee18/zed_norminette) will **automatically update your 42 header!**
-now you have to do:
+This program is designed to work with [norminette LSP](https://github.com/DavidLee18/norminette_lsp) for Zed.
+This means if you do some config, then when you save file, [Norminette extension](https://github.com/DavidLee18/zed_norminette) will **automatically update your 42 header.**
+you have to do:
 1. download executable from release page.
 2. install "Norminette" extension in Zed.
 3. in your Zed's `settings.json`, create or add like following, to the `"lsp"`:

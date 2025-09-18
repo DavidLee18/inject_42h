@@ -76,8 +76,8 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
         "/*                                                        :::      ::::::::   */\n",
     );
     res.push_str("/*   ");
+    let file = if file.len() > 51 { &file[..51] } else { &file };
     res.push_str(&file);
-    assert!(51 >= file.len());
     res.push_str(" ".repeat(51 - file.len()).as_str());
     res.push_str(":+:      :+:    :+:   */\n");
     res.push_str(
@@ -86,9 +86,9 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
     res.push_str("/*   By: ");
     res.push_str(&name);
     res.push_str(" <");
+    let email = if email.len() + name.len() > 40 { &email[..(40 - name.len())] } else { &email };
     res.push_str(&email);
     res.push_str(">");
-    assert!(40 >= name.len() + email.len());
     res.push_str(" ".repeat(40 - name.len() - email.len()).as_str());
     res.push_str("+#+  +:+       +#+        */\n");
     res.push_str(
@@ -105,8 +105,8 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
         .with_timezone(&FixedOffset::east_opt(offset * 3600).unwrap());
     res.push_str(&created.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
+    let name = if name.len() > 17 { &name[..17] } else { &name };
     res.push_str(&name);
-    assert!(18 >= name.len());
     res.push_str(" ".repeat(18 - name.len()).as_str());
     res.push_str("#+#    #+#             */\n");
 
@@ -120,7 +120,6 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
     res.push_str(&modified.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
     res.push_str(&name);
-    assert!(17 >= name.len());
     res.push_str(" ".repeat(17 - name.len()).as_str());
     res.push_str("###   ########.fr       */\n");
     res.push_str(
@@ -134,8 +133,8 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
 }
 
 fn _42_replace(
-    header: _42Header,
-    updater_name: String,
+    mut header: _42Header,
+    mut updater_name: String,
     path: &Path,
     file_name: &str,
     offset: i32,
@@ -151,8 +150,8 @@ fn _42_replace(
         "/*                                                        :::      ::::::::   */\n",
     );
     res.push_str("/*   ");
+    let file_name = if file_name.len() > 51 { &file_name[..51] } else { &file_name };
     res.push_str(file_name);
-    assert!(51 >= file_name.len());
     res.push_str(" ".repeat(51 - file_name.len()).as_str());
     res.push_str(":+:      :+:    :+:   */\n");
     res.push_str(
@@ -161,9 +160,9 @@ fn _42_replace(
     res.push_str("/*   By: ");
     res.push_str(&header.name);
     res.push_str(" <");
+    header.email.truncate(40 - header.name.len() - 1);
     res.push_str(&header.email);
     res.push_str(">");
-    assert!(40 >= header.name.len() + header.email.len());
     res.push_str(
         " ".repeat(40 - header.name.len() - header.email.len())
             .as_str(),
@@ -177,8 +176,8 @@ fn _42_replace(
     let meta = fs::metadata(path).expect("metadata on this path does not exist");
     res.push_str(&header.created.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
+    header.name.truncate(18);
     res.push_str(&header.name);
-    assert!(18 >= header.name.len());
     res.push_str(" ".repeat(18 - header.name.len()).as_str());
     res.push_str("#+#    #+#             */\n");
 
@@ -191,8 +190,8 @@ fn _42_replace(
         .with_timezone(&FixedOffset::east_opt(offset * 3600).unwrap());
     res.push_str(&modified.format("%Y/%m/%d %H:%M:%S").to_string());
     res.push_str(" by ");
+    updater_name.truncate(17);
     res.push_str(&updater_name);
-    assert!(17 >= updater_name.len());
     res.push_str(" ".repeat(17 - updater_name.len()).as_str());
     res.push_str("###   ########.fr       */\n");
     res.push_str(
