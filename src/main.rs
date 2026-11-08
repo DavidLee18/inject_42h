@@ -41,12 +41,17 @@ fn main() -> io::Result<()> {
             )?;
             Ok(())
         }
+        Err(_) if content.starts_with("/* ************************************************************************** */") => {
+            Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Existing 42 header is malformed; file left unchanged",
+            ))
+        }
         Err(e) => match e {
             nom::Err::Incomplete(_) => {
                 Err(io::Error::new(io::ErrorKind::InvalidData, "Incomplete"))
             }
-            nom::Err::Error(nom::error::Error { input: c, .. })
-            | nom::Err::Failure(nom::error::Error { input: c, .. }) => {
+            nom::Err::Error(_) | nom::Err::Failure(_) => {
                 let header = _42(
                     args.name,
                     args.email,
@@ -57,7 +62,7 @@ fn main() -> io::Result<()> {
                     &args.path,
                     args.offset.unwrap_or(0),
                 );
-                fs::write(&args.path, header + c)?;
+                fs::write(&args.path, header + &content)?;
                 Ok(())
             }
         },
@@ -86,7 +91,7 @@ fn _42(name: String, email: String, file: &str, path: &str, offset: i32) -> Stri
     res.push_str("/*   By: ");
     res.push_str(&name);
     res.push_str(" <");
-    let email = if email.len() + name.len() > 40 { &email[..(40 - name.len())] } else { &email };
+    let email = if email.len() + name.len() > 39 { &email[..(39 - name.len())] } else { &email };
     res.push_str(&email);
     res.push_str(">");
     res.push_str(" ".repeat(40 - name.len() - email.len()).as_str());
